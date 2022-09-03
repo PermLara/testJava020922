@@ -6,7 +6,21 @@ public class Main {
 
     public static void main(String[] args) throws IOException {
 
+        String inputString, resultString;
         Scanner scanner = new Scanner(System.in);
+
+        while (true) {
+            inputString = scanner.nextLine();
+            if (inputString.equalsIgnoreCase("quit")) {
+                System.out.println("Расчеты окончены.");
+                break;
+            }
+            resultString = calc(inputString);
+            System.out.println(resultString);
+        }
+    }
+
+    public static String calc(String inputString) throws IOException {
 
         int result;
         boolean foundOperator;
@@ -15,66 +29,54 @@ public class Main {
         KataOperator kataOperator = null;
         Digit roman1, roman2;
 
-        //в цикле считываем и решаем
-        while (true) {
-            //получили данные
-            String inputLine = scanner.nextLine();
-            if (inputLine.equalsIgnoreCase("quit")) {
-                System.out.println("Расчеты окончены. Было здорово!");
+        foundOperator = false;
+        for (KataOperator element : KataOperator.values()) {
+            if (inputString.indexOf(element.getCode()) > 0) {
+                kataOperator = element;
+                foundOperator = true;
                 break;
             }
-            //ищем в строке оператор
-            foundOperator = false;
-            for (KataOperator element : KataOperator.values()) {
-                if (inputLine.indexOf(element.getCode()) > 0) {
-                    kataOperator = element;
-                    foundOperator = true;
-                    break;
-                }
-            }
-            if (!foundOperator)
+        }
+        if (!foundOperator)
             throw new IOException("Во входной строке не найден оператор.");
 
-            //разбиваем входную строку на 2 части по оператору
-            arguments = inputLine.split(kataOperator.toRegexp());
-            if (arguments.length != 2)
+        arguments = inputString.split(kataOperator.toRegexp());
+        if (arguments.length != 2)
             throw new IOException("Задано неверное число операндов. Во входной строке должно быть два операнда.");
 
-            arguments[0] = arguments[0].trim();
-            arguments[1] = arguments[1].trim();
+        arguments[0] = arguments[0].trim();
+        arguments[1] = arguments[1].trim();
 
-            //определить, в какой системе заданы операнды
-            isArabian1 = isArabian(arguments[0],0);
-            isArabian2 = isArabian(arguments[1],1);
-            if (isArabian1.length() == 0 && isArabian2.length() == 0) {
-                result = kataOperator.getResult(Integer.parseInt(arguments[0]), Integer.parseInt(arguments[1]));
-                resultString = Integer.toString(result);
-            } else {
-                isRoman1 = isRoman(arguments[0],0);
-                isRoman2 = isRoman(arguments[1],1);
-                if (isRoman1.length() == 0 && isRoman2.length() == 0) {
-                    roman1 = Digit.valueOf(arguments[0]);
-                    roman2 = Digit.valueOf(arguments[1]);
-                    result = kataOperator.getResult(roman1.getArabian(), roman2.getArabian());
-                    //результат должен быть не отрицательный
-                    if (result<=0)
+        isArabian1 = isArabian(arguments[0],0);
+        isArabian2 = isArabian(arguments[1],1);
+
+        if (isArabian1.length() == 0 && isArabian2.length() == 0) {
+            result = kataOperator.getResult(Integer.parseInt(arguments[0]), Integer.parseInt(arguments[1]));
+            resultString = Integer.toString(result);
+        } else {
+            isRoman1 = isRoman(arguments[0],0);
+            isRoman2 = isRoman(arguments[1],1);
+            if (isRoman1.length() == 0 && isRoman2.length() == 0) {
+                roman1 = Digit.valueOf(arguments[0]);
+                roman2 = Digit.valueOf(arguments[1]);
+                result = kataOperator.getResult(roman1.getArabian(), roman2.getArabian());
+                if (result<=0)
                     throw new IOException("Получили отрицательный или нулевой результат в римских цифрах.");
-                    //переводим в римские цифры, допустимый диапазон от 1 до 100
-                    resultString = Digit.getRoman(result);
-                } else
-                    //операнды в разных системах
-                    if ((isArabian1.length() == 0 && isRoman2.length() == 0)
+                //переводим в римские цифры, допустимый диапазон от 1 до 100
+                resultString = Digit.getRoman(result);
+            } else
+                if ((isArabian1.length() == 0 && isRoman2.length() == 0)
                         || (isRoman1.length() == 0 && isArabian2.length() == 0)
-                        ) {
-                        throw new IOException("Операнды заданы в разных системах.");
-                    } else
+                ) {
+                    throw new IOException("Операнды заданы в разных системах.");
+                } else
                     throw new IOException("Операнды заданы неверно."
                             + isArabian1 + " " +isArabian2 + " " + isRoman1 + " " + isRoman2);
-            }
-
-            System.out.println(resultString);
         }
+
+        return resultString;
     }
+
 
     private static String isArabian(String input, int operandNumber) {
         int x;
@@ -85,7 +87,6 @@ public class Main {
         } catch (NumberFormatException nfe) {
             return "Операнд " + input + " не распознан как арабская цифра.";
         }
-        //проверить на нецелые числа
         d = Double.parseDouble(input);
         if (x <= 0) return "Задан отрицательный или нулевой " + firstOrSecond + " операнд.";
         if (x > 10) return "Задан " + firstOrSecond + " операнд больше 10.";

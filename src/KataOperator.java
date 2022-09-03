@@ -1,4 +1,4 @@
-public enum KataOperator {
+enum KataOperator {
     PLUS(43,"+"),
     MINUS(45, "-"),
     MULTIPLY(42, "*"),
@@ -23,6 +23,7 @@ public enum KataOperator {
     }
 
     public int getResult(int firstArgument, int secondArgument) {
+
         return switch (this.name()) {
             case "PLUS" -> firstArgument + secondArgument;
             case "MINUS" -> firstArgument - secondArgument;

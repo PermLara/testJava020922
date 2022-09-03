@@ -1,4 +1,4 @@
-public enum Digit {
+enum Digit {
     I(1),
     II(2),
     III(3),
@@ -34,10 +34,8 @@ public enum Digit {
         int decimal, modulo;
         String result = "";
 
-        //проверяем на недопустимые
-         if(a < 0 || a > 100) return "";
+        if(a < 0 || a > 100) return "";
 
-        //берем, какие возможно, без преобразований
         if (a <= 10 || a == 50 || a == 100) {
             for (Digit e : values()) {
                 if (e.arabian == a) {
@@ -45,14 +43,12 @@ public enum Digit {
                 }
             }
         }
-        //десятки
         decimal = a - a % 10;
         for (Digit e : values()) {
             if (e.arabian == decimal) {
                 result = e.name();
             }
         }
-        //единицы
         modulo = a % 10;
         for (Digit e : values()) {
             if (e.arabian == modulo) {
