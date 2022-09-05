@@ -28,7 +28,7 @@ enum KataOperator {
             case "PLUS" -> firstArgument + secondArgument;
             case "MINUS" -> firstArgument - secondArgument;
             case "MULTIPLY" -> firstArgument * secondArgument;
-            case "DIVIDE" -> Math.round((float) firstArgument / secondArgument);
+            case "DIVIDE" -> firstArgument / secondArgument;
             default -> 0;
         };
 

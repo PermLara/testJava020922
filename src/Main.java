@@ -22,8 +22,9 @@ public class Main {
 
     public static String calc(String inputString) throws IOException {
 
-        int result;
+        final boolean FIRST=true, SECOND=false;
         boolean foundOperator;
+        int result;
         String resultString, isArabian1, isArabian2, isRoman1, isRoman2;
         String[] arguments;
         KataOperator kataOperator = null;
@@ -47,16 +48,16 @@ public class Main {
         arguments[0] = arguments[0].trim();
         arguments[1] = arguments[1].trim();
 
-        isArabian1 = isArabian(arguments[0],0);
-        isArabian2 = isArabian(arguments[1],1);
+        isArabian1 = isArabian(arguments[0],FIRST);
+        isArabian2 = isArabian(arguments[1],SECOND);
 
-        if (isArabian1.length() == 0 && isArabian2.length() == 0) {
+        if (isArabian1.isEmpty() && isArabian2.isEmpty()) {
             result = kataOperator.getResult(Integer.parseInt(arguments[0]), Integer.parseInt(arguments[1]));
             resultString = Integer.toString(result);
         } else {
-            isRoman1 = isRoman(arguments[0],0);
-            isRoman2 = isRoman(arguments[1],1);
-            if (isRoman1.length() == 0 && isRoman2.length() == 0) {
+            isRoman1 = isRoman(arguments[0], FIRST);
+            isRoman2 = isRoman(arguments[1], SECOND);
+            if (isRoman1.isEmpty() && isRoman2.isEmpty()) {
                 roman1 = Digit.valueOf(arguments[0]);
                 roman2 = Digit.valueOf(arguments[1]);
                 result = kataOperator.getResult(roman1.getArabian(), roman2.getArabian());
@@ -65,8 +66,8 @@ public class Main {
                 //переводим в римские цифры, допустимый диапазон от 1 до 100
                 resultString = Digit.getRoman(result);
             } else
-                if ((isArabian1.length() == 0 && isRoman2.length() == 0)
-                        || (isRoman1.length() == 0 && isArabian2.length() == 0)
+                if ((isArabian1.isEmpty() && isRoman2.isEmpty())
+                        || (isRoman1.isEmpty() && isArabian2.isEmpty())
                 ) {
                     throw new IOException("Операнды заданы в разных системах.");
                 } else
@@ -78,10 +79,10 @@ public class Main {
     }
 
 
-    private static String isArabian(String input, int operandNumber) {
+    private static String isArabian(String input, boolean operandNumber) {
         int x;
         double d;
-        String firstOrSecond = operandNumber == 0 ? "первый" : "второй";
+        String firstOrSecond = operandNumber ? "первый" : "второй";
         try {
             x = Integer.parseInt(input);
         } catch (NumberFormatException nfe) {
@@ -94,9 +95,9 @@ public class Main {
         return ""; //успешно можно преобразовать в арабскую цифру
     }
 
-    private static String isRoman(String input, int operandNumber) {
+    private static String isRoman(String input, boolean operandNumber) {
         Digit y;
-        String firstOrSecond = operandNumber == 0 ? "первый" : "второй";
+        String firstOrSecond = operandNumber ? "первый" : "второй";
         try {
             y = Digit.valueOf(input.toUpperCase());
 
